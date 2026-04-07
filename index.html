@@ -1672,80 +1672,123 @@
                     video com ate 40 segundos.</p>
             </div>
 
+            <!-- Delivery Toggle -->
+            <div class="delivery-toggle reveal" style="display:flex;justify-content:center;margin-bottom:40px;">
+                <div id="deliveryToggle" style="
+                    display:inline-flex;
+                    background:var(--card);
+                    border:1px solid var(--card-border);
+                    border-radius:12px;
+                    padding:4px;
+                    gap:4px;
+                ">
+                    <button onclick="setDelivery('normal')" id="btn-normal" class="delivery-btn active" style="
+                        padding:12px 24px;
+                        border-radius:10px;
+                        border:none;
+                        cursor:pointer;
+                        font-family:var(--font-body);
+                        font-size:14px;
+                        font-weight:600;
+                        transition:all 0.3s;
+                        background:var(--brand);
+                        color:var(--bg);
+                    ">
+                        <span style="display:block;font-size:11px;font-weight:500;opacity:0.7;margin-bottom:2px;">ENTREGA NORMAL</span>
+                        Ate 72 horas
+                    </button>
+                    <button onclick="setDelivery('express')" id="btn-express" class="delivery-btn" style="
+                        padding:12px 24px;
+                        border-radius:10px;
+                        border:none;
+                        cursor:pointer;
+                        font-family:var(--font-body);
+                        font-size:14px;
+                        font-weight:600;
+                        transition:all 0.3s;
+                        background:transparent;
+                        color:var(--text-secondary);
+                    ">
+                        <span style="display:block;font-size:11px;font-weight:500;opacity:0.7;margin-bottom:2px;">ENTREGA EXPRESS &#9889;</span>
+                        Em 24 horas
+                    </button>
+                </div>
+            </div>
+
             <div class="pricing-grid reveal">
                 <div class="pricing-card">
                     <h3>1 Video</h3>
                     <p class="pricing-videos">Ideal para testar</p>
-                    <div class="pricing-price">R$200</div>
-                    <div class="pricing-per-video">R$200 por video</div>
+                    <div class="pricing-price" data-normal="200" data-express="300">R$200</div>
+                    <div class="pricing-per-video" data-normal="R$200 por video" data-express="R$300 por video">R$200 por video</div>
                     <ul class="pricing-features">
                         <li>1 video de ate 40 segundos</li>
                         <li>Influencer IA exclusiva</li>
                         <li>Roteiro incluso</li>
                         <li>Ate 2 revisoes</li>
-                        <li>Entrega em 48h</li>
+                        <li class="delivery-time">Entrega em ate 72h</li>
                         <li>Todos os formatos (9:16, 1:1, 16:9)</li>
                         <li>Sem marca d'agua</li>
                     </ul>
-                    <a href="https://wa.me/5511912352345?text=Quero%201%20video" class="btn-primary">Quero esse</a>
+                    <a href="https://wa.me/5511912352345?text=Quero%201%20video" class="btn-primary pricing-cta" data-normal="Quero%201%20video" data-express="Quero%201%20video%20EXPRESS">Quero esse</a>
                 </div>
 
                 <div class="pricing-card">
                     <h3>3 Videos</h3>
                     <p class="pricing-videos">Mais procurado</p>
-                    <div class="pricing-price">R$510</div>
-                    <div class="pricing-per-video">R$170 por video — economize 15%</div>
+                    <div class="pricing-price" data-normal="510" data-express="765">R$510</div>
+                    <div class="pricing-per-video" data-normal="R$170 por video — economize 15%" data-express="R$255 por video — economize 15%">R$170 por video — economize 15%</div>
                     <ul class="pricing-features">
                         <li>3 videos de ate 40 segundos</li>
                         <li>Influencer IA exclusiva</li>
                         <li>Roteiros inclusos</li>
                         <li>Ate 2 revisoes por video</li>
-                        <li>Entrega em 48h</li>
+                        <li class="delivery-time">Entrega em ate 72h</li>
                         <li>Todos os formatos (9:16, 1:1, 16:9)</li>
                         <li>Sem marca d'agua</li>
                     </ul>
                     <a href="https://wa.me/5511912352345?text=Quero%20o%20pacote%20de%203%20videos"
-                        class="btn-primary">Quero esse</a>
+                        class="btn-primary pricing-cta" data-normal="Quero%20o%20pacote%20de%203%20videos" data-express="Quero%20o%20pacote%20de%203%20videos%20EXPRESS">Quero esse</a>
                 </div>
 
                 <div class="pricing-card featured">
                     <div class="pricing-badge">Melhor Custo-Beneficio</div>
                     <h3>5 Videos</h3>
                     <p class="pricing-videos">Mais pedido</p>
-                    <div class="pricing-price">R$750</div>
-                    <div class="pricing-per-video">R$150 por video — economize 25%</div>
+                    <div class="pricing-price" data-normal="750" data-express="1.125">R$750</div>
+                    <div class="pricing-per-video" data-normal="R$150 por video — economize 25%" data-express="R$225 por video — economize 25%">R$150 por video — economize 25%</div>
                     <ul class="pricing-features">
                         <li>5 videos de ate 40 segundos</li>
                         <li>Influencer IA exclusiva</li>
                         <li>Roteiros inclusos</li>
                         <li>Ate 2 revisoes por video</li>
-                        <li>Entrega em 24-48h</li>
+                        <li class="delivery-time">Entrega em ate 72h</li>
                         <li>Todos os formatos (9:16, 1:1, 16:9)</li>
                         <li>Sem marca d'agua</li>
                         <li>Direcao criativa inclusa</li>
                     </ul>
                     <a href="https://wa.me/5511912352345?text=Quero%20o%20pacote%20de%205%20videos"
-                        class="btn-primary">Quero esse</a>
+                        class="btn-primary pricing-cta" data-normal="Quero%20o%20pacote%20de%205%20videos" data-express="Quero%20o%20pacote%20de%205%20videos%20EXPRESS">Quero esse</a>
                 </div>
 
                 <div class="pricing-card">
                     <h3>10 Videos</h3>
                     <p class="pricing-videos">Para escalar</p>
-                    <div class="pricing-price">R$1.200</div>
-                    <div class="pricing-per-video">R$120 por video — economize 40%</div>
+                    <div class="pricing-price" data-normal="1.200" data-express="1.800">R$1.200</div>
+                    <div class="pricing-per-video" data-normal="R$120 por video — economize 40%" data-express="R$180 por video — economize 40%">R$120 por video — economize 40%</div>
                     <ul class="pricing-features">
                         <li>10 videos de ate 40 segundos</li>
                         <li>Influencers IA exclusivas</li>
                         <li>Roteiros inclusos</li>
                         <li>Ate 3 revisoes por video</li>
-                        <li>Entrega prioritaria</li>
+                        <li class="delivery-time">Entrega em ate 72h</li>
                         <li>Todos os formatos (9:16, 1:1, 16:9)</li>
                         <li>Sem marca d'agua</li>
                         <li>Direcao criativa inclusa</li>
                         <li>Suporte prioritario</li>
                     </ul>
                     <a href="https://wa.me/5511912352345?text=Quero%20o%20pacote%20de%2010%20videos"
-                        class="btn-primary">Quero esse</a>
+                        class="btn-primary pricing-cta" data-normal="Quero%20o%20pacote%20de%2010%20videos" data-express="Quero%20o%20pacote%20de%2010%20videos%20EXPRESS">Quero esse</a>
                 </div>
             </div>
         </div>
@@ -2009,6 +2052,45 @@
         }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
 
         reveals.forEach(el => revealObserver.observe(el));
+
+        // Delivery toggle (normal vs express)
+        function setDelivery(mode) {
+            const btnNormal = document.getElementById('btn-normal');
+            const btnExpress = document.getElementById('btn-express');
+
+            if (mode === 'express') {
+                btnExpress.style.background = 'var(--brand)';
+                btnExpress.style.color = 'var(--bg)';
+                btnNormal.style.background = 'transparent';
+                btnNormal.style.color = 'var(--text-secondary)';
+            } else {
+                btnNormal.style.background = 'var(--brand)';
+                btnNormal.style.color = 'var(--bg)';
+                btnExpress.style.background = 'transparent';
+                btnExpress.style.color = 'var(--text-secondary)';
+            }
+
+            // Update prices
+            document.querySelectorAll('.pricing-price').forEach(el => {
+                el.textContent = 'R$' + el.dataset[mode];
+            });
+
+            // Update per-video text
+            document.querySelectorAll('.pricing-per-video').forEach(el => {
+                el.textContent = el.dataset[mode];
+            });
+
+            // Update delivery time text
+            document.querySelectorAll('.delivery-time').forEach(el => {
+                el.textContent = mode === 'express' ? 'Entrega em 24h' : 'Entrega em ate 72h';
+            });
+
+            // Update WhatsApp links
+            document.querySelectorAll('.pricing-cta').forEach(el => {
+                const text = el.dataset[mode];
+                el.href = 'https://wa.me/5511912352345?text=' + text;
+            });
+        }
 
         // Portfolio video play/pause
         function toggleVideo(overlay) {
