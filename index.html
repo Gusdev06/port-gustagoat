@@ -1,0 +1,2011 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GustaGoat Studio — Vídeos com IA para sua marca</title>
+    <meta name="description"
+        content="Criamos vídeos profissionais com inteligência artificial para sua empresa. Influencers digitais, criativos para Meta Ads, UGC e conteúdo para redes sociais.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap"
+        rel="stylesheet">
+    <style>
+        /* ===== RESET & BASE ===== */
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --brand: #a2dd00;
+            --brand-hover: #8bc400;
+            --brand-glow: rgba(162, 221, 0, 0.15);
+            --brand-glow-strong: rgba(162, 221, 0, 0.3);
+            --bg: #141a1c;
+            --bg-secondary: #1a2123;
+            --card: #1e2829;
+            --card-hover: #243032;
+            --card-border: rgba(162, 221, 0, 0.08);
+            --text: #f3f0ed;
+            --text-secondary: rgba(243, 240, 237, 0.6);
+            --text-muted: rgba(243, 240, 237, 0.35);
+            --red-strike: #ff4d4d;
+            --font-display: 'Space Mono', monospace;
+            --font-body: 'Instrument Sans', sans-serif;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ===== NOISE TEXTURE OVERLAY ===== */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        /* ===== UTILITY ===== */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        .tag {
+            font-family: var(--font-display);
+            font-size: 11px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--brand);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .tag::before {
+            content: '';
+            width: 24px;
+            height: 1px;
+            background: var(--brand);
+        }
+
+        .section-title {
+            font-family: var(--font-display);
+            font-size: clamp(28px, 5vw, 42px);
+            font-weight: 700;
+            line-height: 1.15;
+            margin-bottom: 16px;
+        }
+
+        .section-subtitle {
+            font-size: 17px;
+            color: var(--text-secondary);
+            max-width: 560px;
+            line-height: 1.7;
+        }
+
+        /* ===== ANIMATIONS ===== */
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes pulse-glow {
+
+            0%,
+            100% {
+                box-shadow: 0 0 20px var(--brand-glow);
+            }
+
+            50% {
+                box-shadow: 0 0 40px var(--brand-glow-strong);
+            }
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-6px);
+            }
+        }
+
+        @keyframes scan-line {
+            0% {
+                top: -2px;
+            }
+
+            100% {
+                top: 100%;
+            }
+        }
+
+        @keyframes counter {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.7s ease, transform 0.7s ease;
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ===== NAVBAR ===== */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            padding: 16px 0;
+            background: rgba(20, 26, 28, 0.85);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--card-border);
+            transition: all 0.3s ease;
+        }
+
+        .navbar.scrolled {
+            padding: 10px 0;
+            background: rgba(20, 26, 28, 0.95);
+        }
+
+        .navbar .container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .nav-logo {
+            font-family: var(--font-display);
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-logo span {
+            color: var(--brand);
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 32px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            font-size: 14px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.2s;
+            font-weight: 500;
+        }
+
+        .nav-links a:hover {
+            color: var(--text);
+        }
+
+        .nav-cta {
+            background: var(--brand) !important;
+            color: var(--bg) !important;
+            padding: 10px 24px;
+            border-radius: 6px;
+            font-weight: 600 !important;
+            font-size: 13px !important;
+            transition: all 0.2s !important;
+        }
+
+        .nav-cta:hover {
+            background: var(--brand-hover) !important;
+            transform: translateY(-1px);
+        }
+
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            padding: 4px;
+        }
+
+        .hamburger span {
+            width: 24px;
+            height: 2px;
+            background: var(--text);
+            transition: all 0.3s;
+        }
+
+        /* ===== HERO ===== */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            position: relative;
+            padding: 120px 0 80px;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -200px;
+            right: -200px;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, var(--brand-glow) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 16px;
+            background: rgba(162, 221, 0, 0.08);
+            border: 1px solid rgba(162, 221, 0, 0.15);
+            border-radius: 100px;
+            font-size: 13px;
+            color: var(--brand);
+            font-weight: 500;
+            margin-bottom: 32px;
+            animation: fadeIn 0.6s ease both;
+        }
+
+        .hero-badge::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            background: var(--brand);
+            border-radius: 50%;
+            animation: pulse-glow 2s infinite;
+        }
+
+        .hero h1 {
+            font-family: var(--font-display);
+            font-size: clamp(36px, 7vw, 72px);
+            font-weight: 700;
+            line-height: 1.05;
+            margin-bottom: 24px;
+            animation: fadeUp 0.8s ease both 0.1s;
+            max-width: 800px;
+        }
+
+        .hero h1 .accent {
+            color: var(--brand);
+            position: relative;
+        }
+
+        .hero-subtitle {
+            font-size: clamp(16px, 2.5vw, 20px);
+            color: var(--text-secondary);
+            max-width: 580px;
+            line-height: 1.7;
+            margin-bottom: 40px;
+            animation: fadeUp 0.8s ease both 0.25s;
+        }
+
+        .hero-actions {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            animation: fadeUp 0.8s ease both 0.4s;
+        }
+
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--brand);
+            color: var(--bg);
+            padding: 16px 36px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 15px;
+            text-decoration: none;
+            transition: all 0.25s ease;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-primary:hover {
+            background: var(--brand-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px var(--brand-glow);
+        }
+
+        .btn-secondary {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text);
+            padding: 16px 36px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 15px;
+            text-decoration: none;
+            border: 1px solid rgba(243, 240, 237, 0.15);
+            transition: all 0.25s ease;
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--brand);
+            color: var(--brand);
+            background: rgba(162, 221, 0, 0.05);
+        }
+
+        .hero-micro {
+            margin-top: 20px;
+            font-size: 13px;
+            color: var(--text-muted);
+            animation: fadeUp 0.8s ease both 0.55s;
+        }
+
+        /* ===== HERO VIDEO GRID ===== */
+        .hero-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-top: 80px;
+            animation: fadeUp 0.8s ease both 0.6s;
+        }
+
+        .hero-grid-item {
+            position: relative;
+            border-radius: 12px;
+            overflow: hidden;
+            background: var(--card);
+            border: 1px solid var(--card-border);
+            aspect-ratio: 9/16;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .hero-grid-item:nth-child(2) {
+            transform: translateY(-20px);
+        }
+
+        .hero-grid-item:hover {
+            border-color: rgba(162, 221, 0, 0.2);
+            transform: scale(1.02);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .hero-grid-item:nth-child(2):hover {
+            transform: translateY(-20px) scale(1.02);
+        }
+
+        .video-placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--card) 0%, var(--bg-secondary) 100%);
+            position: relative;
+        }
+
+        .video-placeholder::after {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--brand);
+            opacity: 0;
+            animation: scan-line 3s linear infinite;
+        }
+
+        .hero-grid-item:hover .video-placeholder::after {
+            opacity: 0.4;
+        }
+
+        .play-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: rgba(162, 221, 0, 0.1);
+            border: 2px solid rgba(162, 221, 0, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .hero-grid-item:hover .play-icon {
+            background: rgba(162, 221, 0, 0.2);
+            border-color: var(--brand);
+        }
+
+        .play-icon svg {
+            width: 18px;
+            height: 18px;
+            fill: var(--brand);
+            margin-left: 3px;
+        }
+
+        .video-label {
+            margin-top: 12px;
+            font-size: 11px;
+            color: var(--text-muted);
+            font-family: var(--font-display);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        /* ===== STATS BAR ===== */
+        .stats-bar {
+            padding: 40px 0;
+            border-top: 1px solid var(--card-border);
+            border-bottom: 1px solid var(--card-border);
+            background: var(--bg-secondary);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+            text-align: center;
+        }
+
+        .stat-item {
+            padding: 16px;
+        }
+
+        .stat-number {
+            font-family: var(--font-display);
+            font-size: clamp(28px, 4vw, 40px);
+            font-weight: 700;
+            color: var(--brand);
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* ===== SECTIONS COMMON ===== */
+        section {
+            padding: 100px 0;
+        }
+
+        .section-header {
+            margin-bottom: 60px;
+        }
+
+        /* ===== SERVICES ===== */
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .service-card {
+            background: var(--card);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 40px;
+            transition: all 0.35s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .service-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--brand), transparent);
+            opacity: 0;
+            transition: opacity 0.35s;
+        }
+
+        .service-card:hover {
+            border-color: rgba(162, 221, 0, 0.15);
+            background: var(--card-hover);
+            transform: translateY(-4px);
+        }
+
+        .service-card:hover::before {
+            opacity: 1;
+        }
+
+        .service-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 10px;
+            background: rgba(162, 221, 0, 0.08);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 24px;
+            font-size: 22px;
+        }
+
+        .service-card h3 {
+            font-family: var(--font-display);
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .service-card p {
+            font-size: 15px;
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+
+        /* ===== PORTFOLIO ===== */
+        .portfolio-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+        }
+
+        .portfolio-item {
+            position: relative;
+            border-radius: 12px;
+            overflow: hidden;
+            background: var(--card);
+            border: 1px solid var(--card-border);
+            cursor: pointer;
+            transition: all 0.35s ease;
+            group: true;
+        }
+
+        /* tall class not used with video grid */
+
+        .portfolio-item:hover {
+            border-color: rgba(162, 221, 0, 0.2);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .portfolio-thumb {
+            width: 100%;
+            aspect-ratio: 9/16;
+            background: linear-gradient(135deg, var(--card) 0%, var(--bg-secondary) 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .portfolio-thumb video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .portfolio-thumb .play-overlay {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0,0,0,0.25);
+            transition: all 0.3s;
+            cursor: pointer;
+            z-index: 2;
+        }
+
+        .portfolio-thumb .play-overlay.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .portfolio-thumb .play-overlay svg {
+            width: 48px;
+            height: 48px;
+            filter: drop-shadow(0 4px 12px rgba(0,0,0,0.5));
+            transition: transform 0.2s;
+        }
+
+        .portfolio-item:hover .play-overlay svg {
+            transform: scale(1.15);
+        }
+
+        .portfolio-thumb .play-icon {
+            opacity: 0;
+            transform: scale(0.8);
+            transition: all 0.3s;
+        }
+
+        .portfolio-item:hover .play-icon {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .portfolio-info {
+            padding: 16px 20px;
+        }
+
+        .portfolio-info h4 {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .portfolio-info span {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .portfolio-badge {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            padding: 4px 10px;
+            background: rgba(20, 26, 28, 0.8);
+            backdrop-filter: blur(8px);
+            border-radius: 4px;
+            font-size: 10px;
+            font-family: var(--font-display);
+            color: var(--brand);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            border: 1px solid rgba(162, 221, 0, 0.15);
+        }
+
+        /* ===== COMPARISON ===== */
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .comparison-table tr {
+            border-bottom: 1px solid var(--card-border);
+        }
+
+        .comparison-table td {
+            padding: 20px 24px;
+            font-size: 15px;
+        }
+
+        .comparison-table td:first-child {
+            color: var(--text-secondary);
+            width: 45%;
+        }
+
+        .comparison-table td:last-child {
+            text-align: right;
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 16px;
+        }
+
+        .price-old {
+            color: var(--red-strike);
+            text-decoration: line-through;
+            opacity: 0.7;
+        }
+
+        .price-new {
+            color: var(--brand);
+        }
+
+        .comparison-highlight {
+            background: rgba(162, 221, 0, 0.04);
+            border-radius: 12px;
+        }
+
+        .comparison-highlight td {
+            padding: 24px;
+        }
+
+        .comparison-highlight td:first-child {
+            color: var(--brand);
+            font-weight: 600;
+        }
+
+        /* ===== PRICING ===== */
+        .pricing-section-label {
+            font-family: var(--font-display);
+            font-size: 13px;
+            color: var(--text-muted);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 24px;
+            margin-top: 48px;
+        }
+
+        .pricing-section-label:first-of-type {
+            margin-top: 0;
+        }
+
+        /* Avulso pricing */
+        .pricing-singles {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-bottom: 48px;
+        }
+
+        .single-card {
+            background: var(--card);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 32px;
+            text-align: center;
+            transition: all 0.35s ease;
+        }
+
+        .single-card:hover {
+            border-color: rgba(162, 221, 0, 0.15);
+            transform: translateY(-4px);
+        }
+
+        .single-card h4 {
+            font-family: var(--font-display);
+            font-size: 15px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .single-card .single-desc {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .single-card .single-price {
+            font-family: var(--font-display);
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--brand);
+        }
+
+        .single-card .single-price small {
+            font-size: 14px;
+            color: var(--text-muted);
+            font-weight: 400;
+        }
+
+        /* Video packages */
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+
+        .pricing-card {
+            background: var(--card);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 36px 28px;
+            transition: all 0.35s ease;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .pricing-card:hover {
+            border-color: rgba(162, 221, 0, 0.15);
+            transform: translateY(-4px);
+        }
+
+        .pricing-card.featured {
+            border-color: var(--brand);
+            background: linear-gradient(180deg, rgba(162, 221, 0, 0.06) 0%, var(--card) 100%);
+        }
+
+        .pricing-badge {
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 4px 16px;
+            background: var(--brand);
+            color: var(--bg);
+            font-size: 11px;
+            font-weight: 700;
+            border-radius: 100px;
+            white-space: nowrap;
+            font-family: var(--font-display);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .pricing-card h3 {
+            font-family: var(--font-display);
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .pricing-videos {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+        }
+
+        .pricing-price {
+            font-family: var(--font-display);
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .pricing-price small {
+            font-size: 15px;
+            font-weight: 400;
+            color: var(--text-muted);
+        }
+
+        .pricing-per-video {
+            font-size: 13px;
+            color: var(--brand);
+            font-weight: 600;
+            margin-bottom: 24px;
+        }
+
+        .pricing-features {
+            list-style: none;
+            margin-bottom: 32px;
+            flex: 1;
+        }
+
+        .pricing-features li {
+            font-size: 14px;
+            color: var(--text-secondary);
+            padding: 8px 0;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .pricing-features li::before {
+            content: '';
+            width: 16px;
+            height: 16px;
+            min-width: 16px;
+            border-radius: 50%;
+            background: rgba(162, 221, 0, 0.1);
+            border: 1px solid rgba(162, 221, 0, 0.3);
+            margin-top: 2px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .pricing-card .btn-primary {
+            width: 100%;
+            justify-content: center;
+            padding: 14px 24px;
+            font-size: 14px;
+        }
+
+        .pricing-card:not(.featured) .btn-primary {
+            background: transparent;
+            border: 1px solid rgba(243, 240, 237, 0.15);
+            color: var(--text);
+        }
+
+        .pricing-card:not(.featured) .btn-primary:hover {
+            border-color: var(--brand);
+            color: var(--brand);
+            background: rgba(162, 221, 0, 0.05);
+            box-shadow: none;
+        }
+
+        /* ===== USE CASES ===== */
+        .usecases-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+
+        .usecase-card {
+            background: var(--card);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: 32px;
+            transition: all 0.35s ease;
+        }
+
+        .usecase-card:hover {
+            border-color: rgba(162, 221, 0, 0.15);
+            background: var(--card-hover);
+        }
+
+        .usecase-icon {
+            font-size: 28px;
+            margin-bottom: 16px;
+        }
+
+        .usecase-card h4 {
+            font-size: 15px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .usecase-card p {
+            font-size: 14px;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        /* ===== HOW IT WORKS ===== */
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            position: relative;
+        }
+
+        .steps-grid::before {
+            content: '';
+            position: absolute;
+            top: 48px;
+            left: 16.66%;
+            right: 16.66%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--brand), transparent);
+            opacity: 0.3;
+        }
+
+        .step-card {
+            text-align: center;
+            padding: 40px 24px;
+            position: relative;
+        }
+
+        .step-number {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: rgba(162, 221, 0, 0.08);
+            border: 2px solid rgba(162, 221, 0, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 24px;
+            font-family: var(--font-display);
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--brand);
+            position: relative;
+            z-index: 1;
+        }
+
+        .step-card h3 {
+            font-family: var(--font-display);
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .step-card p {
+            font-size: 15px;
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+
+        /* ===== FAQ ===== */
+        .faq-list {
+            max-width: 800px;
+        }
+
+        .faq-item {
+            border-bottom: 1px solid var(--card-border);
+        }
+
+        .faq-question {
+            width: 100%;
+            background: none;
+            border: none;
+            color: var(--text);
+            padding: 24px 0;
+            font-size: 16px;
+            font-weight: 600;
+            text-align: left;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            font-family: var(--font-body);
+            transition: color 0.2s;
+        }
+
+        .faq-question:hover {
+            color: var(--brand);
+        }
+
+        .faq-icon {
+            width: 24px;
+            height: 24px;
+            min-width: 24px;
+            border-radius: 50%;
+            border: 1px solid var(--card-border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            color: var(--text-muted);
+            transition: all 0.3s;
+        }
+
+        .faq-item.open .faq-icon {
+            background: var(--brand);
+            color: var(--bg);
+            border-color: var(--brand);
+            transform: rotate(45deg);
+        }
+
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease, padding 0.4s ease;
+        }
+
+        .faq-item.open .faq-answer {
+            max-height: 200px;
+            padding-bottom: 24px;
+        }
+
+        .faq-answer p {
+            font-size: 15px;
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+
+        /* ===== CTA FINAL ===== */
+        .cta-section {
+            text-align: center;
+            padding: 120px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-section::before {
+            content: '';
+            position: absolute;
+            bottom: -100px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 800px;
+            height: 400px;
+            background: radial-gradient(ellipse, var(--brand-glow) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .cta-section .section-title {
+            font-size: clamp(32px, 5vw, 52px);
+            margin-bottom: 16px;
+        }
+
+        .cta-section .section-subtitle {
+            margin: 0 auto 40px;
+            text-align: center;
+        }
+
+        .cta-actions {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .cta-micro {
+            margin-top: 20px;
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        /* ===== FOOTER ===== */
+        .footer {
+            padding: 60px 0 32px;
+            border-top: 1px solid var(--card-border);
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 48px;
+            margin-bottom: 48px;
+        }
+
+        .footer-brand p {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-top: 16px;
+            line-height: 1.7;
+        }
+
+        .footer-col h4 {
+            font-family: var(--font-display);
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+        }
+
+        .footer-col ul {
+            list-style: none;
+        }
+
+        .footer-col li {
+            margin-bottom: 12px;
+        }
+
+        .footer-col a {
+            font-size: 14px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .footer-col a:hover {
+            color: var(--brand);
+        }
+
+        .footer-bottom {
+            padding-top: 32px;
+            border-top: 1px solid var(--card-border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        .footer-socials {
+            display: flex;
+            gap: 16px;
+        }
+
+        .footer-socials a {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            border: 1px solid var(--card-border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 16px;
+            transition: all 0.2s;
+        }
+
+        .footer-socials a:hover {
+            border-color: var(--brand);
+            color: var(--brand);
+            background: rgba(162, 221, 0, 0.05);
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 1024px) {
+            .pricing-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .hero-grid {
+                gap: 8px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .hamburger {
+                display: flex;
+            }
+
+            .nav-links.open {
+                display: flex;
+                flex-direction: column;
+                position: fixed;
+                top: 56px;
+                left: 0;
+                right: 0;
+                background: rgba(20, 26, 28, 0.98);
+                backdrop-filter: blur(20px);
+                padding: 24px;
+                gap: 16px;
+                border-bottom: 1px solid var(--card-border);
+            }
+
+            .services-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .portfolio-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 12px;
+            }
+
+            .pricing-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .usecases-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .steps-grid {
+                grid-template-columns: 1fr;
+                gap: 8px;
+            }
+
+            .steps-grid::before {
+                display: none;
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 32px;
+            }
+
+            .hero-grid {
+                grid-template-columns: repeat(3, 1fr);
+                margin-top: 48px;
+            }
+
+            .hero-grid-item:nth-child(2) {
+                transform: translateY(-10px);
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            section {
+                padding: 64px 0;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .portfolio-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-bottom {
+                flex-direction: column;
+                gap: 16px;
+                text-align: center;
+            }
+
+            .hero-actions {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .btn-primary,
+            .btn-secondary {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ===== NAVBAR ===== -->
+    <nav class="navbar" id="navbar">
+        <div class="container">
+            <a href="#" class="nav-logo">Gusta<span>Goat</span> Studio</a>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="#servicos">Servicos</a></li>
+                <li><a href="#portfolio">Portfolio</a></li>
+                <li><a href="#precos">Precos</a></li>
+                <li><a href="#faq">FAQ</a></li>
+                <li><a href="https://wa.me/5511912352345?text=Quero%20um%20or%C3%A7amento" class="nav-cta">Solicitar
+                        Orcamento</a></li>
+            </ul>
+            <div class="hamburger" id="hamburger" onclick="toggleMenu()">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ===== HERO ===== -->
+    <section class="hero" id="hero">
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-badge">Producao de conteudo com IA</div>
+                <h1>Videos profissionais com <span class="accent">IA</span> para sua marca.</h1>
+                <p class="hero-subtitle">Influencers digitais, criativos para Meta Ads, UGC e conteudo para redes
+                    sociais. Sem estudio, sem modelos, sem complicacao.</p>
+                <div class="hero-actions">
+                    <a href="https://wa.me/5511912352345?text=Quero%20um%20or%C3%A7amento" class="btn-primary">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                            <path
+                                d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z" />
+                            <path
+                                d="M12 0C5.373 0 0 5.373 0 12c0 2.625.846 5.059 2.284 7.034L.789 23.492a.5.5 0 00.612.638l4.702-1.399A11.934 11.934 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-2.239 0-4.308-.724-5.993-1.953a.5.5 0 00-.398-.078l-3.236.963.881-3.072a.5.5 0 00-.064-.41A9.946 9.946 0 012 12C2 6.486 6.486 2 12 2s10 4.486 10 10-4.486 10-10 10z" />
+                        </svg>
+                        Solicitar Orcamento
+                    </a>
+                    <a href="#portfolio" class="btn-secondary">Ver Portfolio</a>
+                </div>
+                <p class="hero-micro">Resposta em ate 1 hora &middot; Orcamento gratuito</p>
+            </div>
+
+            <div class="hero-grid">
+                <div class="hero-grid-item">
+                    <video src="https://qwmnnkgejgjlpzofrxrl.supabase.co/storage/v1/object/public/ai-generations/utils/criativo_proposta.mp4" playsinline autoplay loop muted style="width:100%;height:100%;object-fit:cover;display:block;"></video>
+                    <span class="video-label">Meta Ad</span>
+                </div>
+                <div class="hero-grid-item">
+                    <video src="https://qwmnnkgejgjlpzofrxrl.supabase.co/storage/v1/object/public/ai-generations/admin_assets/landing/0762da62-364f-44e3-8180-2004c9d81ead/IA_FANHA.mp4" playsinline autoplay loop muted style="width:100%;height:100%;object-fit:cover;display:block;"></video>
+                    <span class="video-label">Influencer IA</span>
+                </div>
+                <div class="hero-grid-item">
+                    <video src="https://qwmnnkgejgjlpzofrxrl.supabase.co/storage/v1/object/public/ai-generations/admin_assets/landing/b54a0aaa-9690-4f07-bf9b-31131444c46a/video3.mp4" playsinline autoplay loop muted style="width:100%;height:100%;object-fit:cover;display:block;"></video>
+                    <span class="video-label">UGC</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== STATS BAR ===== -->
+    <div class="stats-bar">
+        <div class="container">
+            <div class="stats-grid">
+                <div class="stat-item reveal">
+                    <div class="stat-number">50+</div>
+                    <div class="stat-label">Videos Entregues</div>
+                </div>
+                <div class="stat-item reveal">
+                    <div class="stat-number">24h</div>
+                    <div class="stat-label">Tempo Medio</div>
+                </div>
+                <div class="stat-item reveal">
+                    <div class="stat-number">15+</div>
+                    <div class="stat-label">Clientes Ativos</div>
+                </div>
+                <div class="stat-item reveal">
+                    <div class="stat-number">4.9</div>
+                    <div class="stat-label">Avaliacao Media</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== SERVICES ===== -->
+    <section id="servicos">
+        <div class="container">
+            <div class="section-header reveal">
+                <div class="tag">O que fazemos</div>
+                <h2 class="section-title">Conteudo que converte,<br>sem complicacao.</h2>
+                <p class="section-subtitle">Da ideia ao video pronto para publicar. Voce foca no seu negocio, a gente
+                    cuida do conteudo.</p>
+            </div>
+
+            <div class="services-grid">
+                <div class="service-card reveal">
+                    <div class="service-icon">&#9654;</div>
+                    <h3>Criativos para Meta Ads</h3>
+                    <p>Videos prontos para campanhas no Facebook e Instagram. Formatos 9:16, 1:1 e 16:9. Otimizados para
+                        performance e conversao.</p>
+                </div>
+                <div class="service-card reveal">
+                    <div class="service-icon">&#10024;</div>
+                    <h3>Influencer Digital IA</h3>
+                    <p>Uma influencer virtual exclusiva para sua marca. Ela fala, gesticula e promove seus produtos como
+                        uma pessoa real.</p>
+                </div>
+                <div class="service-card reveal">
+                    <div class="service-icon">&#128248;</div>
+                    <h3>UGC com IA</h3>
+                    <p>Conteudo estilo "user generated content" sem precisar contratar creators. Reviews, unboxings e
+                        demonstracoes realistas.</p>
+                </div>
+                <div class="service-card reveal">
+                    <div class="service-icon">&#128197;</div>
+                    <h3>Conteudo para Redes Sociais</h3>
+                    <p>Posts, stories e reels prontos para publicar. Consistencia visual sem esforco, para todas as
+                        plataformas.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== PORTFOLIO ===== -->
+    <section id="portfolio" style="background: var(--bg-secondary);">
+        <div class="container">
+            <div class="section-header reveal">
+                <div class="tag">Portfolio</div>
+                <h2 class="section-title">Trabalhos recentes.</h2>
+                <p class="section-subtitle">Cada video abaixo foi criado 100% com inteligencia artificial pela nossa
+                    equipe.</p>
+            </div>
+
+            <div class="portfolio-grid">
+                <!-- 1. Criativo Proposta -->
+                <div class="portfolio-item reveal">
+                    <div class="portfolio-thumb">
+                        <video src="https://qwmnnkgejgjlpzofrxrl.supabase.co/storage/v1/object/public/ai-generations/utils/criativo_proposta.mp4" playsinline preload="auto" loop muted></video>
+                        <div class="play-overlay" onclick="toggleVideo(this)">
+                            <svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21" fill="#a2dd00"/></svg>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. Copy B2B -->
+                <div class="portfolio-item reveal">
+                    <div class="portfolio-thumb">
+                        <video src="https://qwmnnkgejgjlpzofrxrl.supabase.co/storage/v1/object/public/ai-generations/utils/copy_BB603422-6C5A-4A4F-83AC-C7D28A9432CD.mov" playsinline preload="auto" loop muted></video>
+                        <div class="play-overlay" onclick="toggleVideo(this)">
+                            <svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21" fill="#a2dd00"/></svg>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. Zoifer -->
+                <div class="portfolio-item reveal">
+                    <div class="portfolio-thumb">
+                        <video src="https://qwmnnkgejgjlpzofrxrl.supabase.co/storage/v1/object/public/ai-generations/utils/Zoifer.mp4" playsinline preload="auto" loop muted></video>
+                        <div class="play-overlay" onclick="toggleVideo(this)">
+                            <svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21" fill="#a2dd00"/></svg>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4. IA Fanha -->
+                <div class="portfolio-item reveal">
+                    <div class="portfolio-thumb">
+                        <video src="https://qwmnnkgejgjlpzofrxrl.supabase.co/storage/v1/object/public/ai-generations/admin_assets/landing/0762da62-364f-44e3-8180-2004c9d81ead/IA_FANHA.mp4" playsinline preload="auto" loop muted></video>
+                        <div class="play-overlay" onclick="toggleVideo(this)">
+                            <svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21" fill="#a2dd00"/></svg>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 5. Le Bife (restaurante) -->
+                <div class="portfolio-item reveal">
+                    <div class="portfolio-thumb">
+                        <video src="https://qwmnnkgejgjlpzofrxrl.supabase.co/storage/v1/object/public/ai-generations/utils/Le_Bife_Video_1.MOV" playsinline preload="auto" loop muted></video>
+                        <div class="play-overlay" onclick="toggleVideo(this)">
+                            <svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21" fill="#a2dd00"/></svg>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 6. Video 3 -->
+                <div class="portfolio-item reveal">
+                    <div class="portfolio-thumb">
+                        <video src="https://qwmnnkgejgjlpzofrxrl.supabase.co/storage/v1/object/public/ai-generations/admin_assets/landing/b54a0aaa-9690-4f07-bf9b-31131444c46a/video3.mp4" playsinline preload="auto" loop muted></video>
+                        <div class="play-overlay" onclick="toggleVideo(this)">
+                            <svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21" fill="#a2dd00"/></svg>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 7. Criativo abril -->
+                <div class="portfolio-item reveal">
+                    <div class="portfolio-thumb">
+                        <video src="https://qwmnnkgejgjlpzofrxrl.supabase.co/storage/v1/object/public/ai-generations/utils/0401(1).mov" playsinline preload="auto" loop muted></video>
+                        <div class="play-overlay" onclick="toggleVideo(this)">
+                            <svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21" fill="#a2dd00"/></svg>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 8. Criativo marco -->
+                <div class="portfolio-item reveal">
+                    <div class="portfolio-thumb">
+                        <video src="https://qwmnnkgejgjlpzofrxrl.supabase.co/storage/v1/object/public/ai-generations/admin_assets/landing/f02b5828-801a-41c7-9ba8-46fe65340c20/0313.mp4" playsinline preload="auto" loop muted></video>
+                        <div class="play-overlay" onclick="toggleVideo(this)">
+                            <svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21" fill="#a2dd00"/></svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== COMPARISON ===== -->
+    <section id="comparacao">
+        <div class="container">
+            <div class="section-header reveal">
+                <div class="tag">Por que IA?</div>
+                <h2 class="section-title">O mesmo resultado.<br>Uma fracao do custo.</h2>
+                <p class="section-subtitle">Compare o investimento em conteudo tradicional com o que voce paga na
+                    GustaGoat
+                    Studio.</p>
+            </div>
+
+            <table class="comparison-table reveal">
+                <tr>
+                    <td>Influencer real (nano, 5-10k seguidores)</td>
+                    <td><span class="price-old">R$300 — R$1.500/video</span></td>
+                </tr>
+                <tr>
+                    <td>Influencer real (micro, 10-50k seguidores)</td>
+                    <td><span class="price-old">R$1.000 — R$5.000/video</span></td>
+                </tr>
+                <tr>
+                    <td>Produtora de video / editor freelancer</td>
+                    <td><span class="price-old">R$500 — R$3.000/video</span></td>
+                </tr>
+                <tr>
+                    <td>Agencia de performance</td>
+                    <td><span class="price-old">R$800 — R$5.000/video</span></td>
+                </tr>
+                <tr class="comparison-highlight">
+                    <td>GustaGoat Studio</td>
+                    <td><span class="price-new">A partir de R$120/video</span></td>
+                </tr>
+            </table>
+        </div>
+    </section>
+
+    <!-- ===== PRICING ===== -->
+    <section id="precos" style="background: var(--bg-secondary);">
+        <div class="container">
+            <div class="section-header reveal">
+                <div class="tag">Precos</div>
+                <h2 class="section-title">Simples: voce paga por video.</h2>
+                <p class="section-subtitle">Quanto mais videos, menor o preco. Sem assinatura, sem mensalidade. Cada
+                    video com ate 40 segundos.</p>
+            </div>
+
+            <div class="pricing-grid reveal">
+                <div class="pricing-card">
+                    <h3>1 Video</h3>
+                    <p class="pricing-videos">Ideal para testar</p>
+                    <div class="pricing-price">R$200</div>
+                    <div class="pricing-per-video">R$200 por video</div>
+                    <ul class="pricing-features">
+                        <li>1 video de ate 40 segundos</li>
+                        <li>Influencer IA exclusiva</li>
+                        <li>Roteiro incluso</li>
+                        <li>Ate 2 revisoes</li>
+                        <li>Entrega em 48h</li>
+                        <li>Todos os formatos (9:16, 1:1, 16:9)</li>
+                        <li>Sem marca d'agua</li>
+                    </ul>
+                    <a href="https://wa.me/5511912352345?text=Quero%201%20video" class="btn-primary">Quero esse</a>
+                </div>
+
+                <div class="pricing-card">
+                    <h3>3 Videos</h3>
+                    <p class="pricing-videos">Mais procurado</p>
+                    <div class="pricing-price">R$510</div>
+                    <div class="pricing-per-video">R$170 por video — economize 15%</div>
+                    <ul class="pricing-features">
+                        <li>3 videos de ate 40 segundos</li>
+                        <li>Influencer IA exclusiva</li>
+                        <li>Roteiros inclusos</li>
+                        <li>Ate 2 revisoes por video</li>
+                        <li>Entrega em 48h</li>
+                        <li>Todos os formatos (9:16, 1:1, 16:9)</li>
+                        <li>Sem marca d'agua</li>
+                    </ul>
+                    <a href="https://wa.me/5511912352345?text=Quero%20o%20pacote%20de%203%20videos"
+                        class="btn-primary">Quero esse</a>
+                </div>
+
+                <div class="pricing-card featured">
+                    <div class="pricing-badge">Melhor Custo-Beneficio</div>
+                    <h3>5 Videos</h3>
+                    <p class="pricing-videos">Mais pedido</p>
+                    <div class="pricing-price">R$750</div>
+                    <div class="pricing-per-video">R$150 por video — economize 25%</div>
+                    <ul class="pricing-features">
+                        <li>5 videos de ate 40 segundos</li>
+                        <li>Influencer IA exclusiva</li>
+                        <li>Roteiros inclusos</li>
+                        <li>Ate 2 revisoes por video</li>
+                        <li>Entrega em 24-48h</li>
+                        <li>Todos os formatos (9:16, 1:1, 16:9)</li>
+                        <li>Sem marca d'agua</li>
+                        <li>Direcao criativa inclusa</li>
+                    </ul>
+                    <a href="https://wa.me/5511912352345?text=Quero%20o%20pacote%20de%205%20videos"
+                        class="btn-primary">Quero esse</a>
+                </div>
+
+                <div class="pricing-card">
+                    <h3>10 Videos</h3>
+                    <p class="pricing-videos">Para escalar</p>
+                    <div class="pricing-price">R$1.200</div>
+                    <div class="pricing-per-video">R$120 por video — economize 40%</div>
+                    <ul class="pricing-features">
+                        <li>10 videos de ate 40 segundos</li>
+                        <li>Influencers IA exclusivas</li>
+                        <li>Roteiros inclusos</li>
+                        <li>Ate 3 revisoes por video</li>
+                        <li>Entrega prioritaria</li>
+                        <li>Todos os formatos (9:16, 1:1, 16:9)</li>
+                        <li>Sem marca d'agua</li>
+                        <li>Direcao criativa inclusa</li>
+                        <li>Suporte prioritario</li>
+                    </ul>
+                    <a href="https://wa.me/5511912352345?text=Quero%20o%20pacote%20de%2010%20videos"
+                        class="btn-primary">Quero esse</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== USE CASES ===== -->
+    <section id="paraquem">
+        <div class="container">
+            <div class="section-header reveal">
+                <div class="tag">Para quem e</div>
+                <h2 class="section-title">Funciona para qualquer nicho.</h2>
+                <p class="section-subtitle">Nossos videos se adaptam ao seu segmento, produto e audiencia.</p>
+            </div>
+
+            <div class="usecases-grid">
+                <div class="usecase-card reveal">
+                    <div class="usecase-icon">&#127860;</div>
+                    <h4>Restaurantes e comercios locais</h4>
+                    <p>Conteudo profissional para atrair clientes da regiao sem investir em producao.</p>
+                </div>
+                <div class="usecase-card reveal">
+                    <div class="usecase-icon">&#128722;</div>
+                    <h4>E-commerce e Dropshipping</h4>
+                    <p>Videos de review e demonstracao para escalar vendas no TikTok Shop e Instagram.</p>
+                </div>
+                <div class="usecase-card reveal">
+                    <div class="usecase-icon">&#127980;</div>
+                    <h4>Marcas e Franquias</h4>
+                    <p>UGC ilimitado sem contratar influencers. Criativos novos toda semana.</p>
+                </div>
+                <div class="usecase-card reveal">
+                    <div class="usecase-icon">&#128640;</div>
+                    <h4>Agencias de Marketing</h4>
+                    <p>Entregue mais resultados para seus clientes com menos tempo e custo.</p>
+                </div>
+                <div class="usecase-card reveal">
+                    <div class="usecase-icon">&#127891;</div>
+                    <h4>Infoprodutores e Afiliados</h4>
+                    <p>Criativos para trafego pago e conteudo organico sem aparecer.</p>
+                </div>
+                <div class="usecase-card reveal">
+                    <div class="usecase-icon">&#128187;</div>
+                    <h4>SaaS e Startups</h4>
+                    <p>Demos, tutoriais e anuncios com personas que representam seu publico.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== HOW IT WORKS ===== -->
+    <section id="como-funciona" style="background: var(--bg-secondary);">
+        <div class="container">
+            <div class="section-header reveal" style="text-align:center;">
+                <div class="tag" style="justify-content:center;">Como funciona</div>
+                <h2 class="section-title">Do briefing ao video pronto<br>em 3 passos.</h2>
+            </div>
+
+            <div class="steps-grid reveal">
+                <div class="step-card">
+                    <div class="step-number">1</div>
+                    <h3>Briefing</h3>
+                    <p>Voce nos conta sobre seu produto, servico e objetivos. Pode ser por WhatsApp, formulario ou call
+                        rapida.</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">2</div>
+                    <h3>Criacao</h3>
+                    <p>Geramos o conteudo com IA de ultima geracao. Influencer, cenario, roteiro — tudo personalizado
+                        para sua marca.</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">3</div>
+                    <h3>Entrega</h3>
+                    <p>Receba os videos prontos para publicar em 24-48h. Com ate 2 revisoes incluidas em cada entrega.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== FAQ ===== -->
+    <section id="faq">
+        <div class="container">
+            <div class="section-header reveal">
+                <div class="tag">Duvidas</div>
+                <h2 class="section-title">Perguntas Frequentes</h2>
+            </div>
+
+            <div class="faq-list reveal">
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFaq(this)">
+                        Quanto tempo leva para receber os videos?
+                        <span class="faq-icon">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>O prazo padrao e de 24 a 48 horas uteis apos a aprovacao do briefing. Para pacotes maiores,
+                            trabalhamos com entregas escalonadas ao longo do mes.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFaq(this)">
+                        Os videos parecem reais?
+                        <span class="faq-icon">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Sim. Usamos a tecnologia mais avancada do mercado em geracao de video com IA. Os resultados
+                            sao ultra-realistas e prontos para publicar em qualquer plataforma.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFaq(this)">
+                        Posso pedir revisoes?
+                        <span class="faq-icon">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Sim. Cada video inclui ate 2 revisoes nos pacotes padrao. No pacote Agencia, as revisoes sao
+                            ilimitadas.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFaq(this)">
+                        Como funciona o pagamento?
+                        <span class="faq-icon">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Aceitamos PIX, cartao de credito e boleto. Pacotes mensais funcionam com renovacao
+                            automatica. Videos avulsos sao pagos antes da producao.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFaq(this)">
+                        Funciona para qualquer nicho?
+                        <span class="faq-icon">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Sim. Ja atendemos restaurantes, e-commerces, marcas de moda, SaaS, infoprodutores e muito
+                            mais. A IA se adapta a qualquer segmento e estilo visual.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFaq(this)">
+                        Posso usar os videos para anuncios pagos?
+                        <span class="faq-icon">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Sim. Todos os videos entregues sao seus e podem ser usados em Meta Ads, TikTok Ads, Google
+                            Ads e qualquer outra plataforma sem restricoes.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== CTA FINAL ===== -->
+    <section class="cta-section" style="background: var(--bg-secondary);">
+        <div class="container reveal">
+            <div class="tag" style="justify-content:center;">Vamos comecar?</div>
+            <h2 class="section-title">Pronto para escalar<br>seu conteudo?</h2>
+            <p class="section-subtitle">Junte-se a dezenas de empresas que ja estao produzindo conteudo profissional com
+                IA. Orcamento gratuito em ate 1 hora.</p>
+            <div class="cta-actions">
+                <a href="https://wa.me/5511912352345?text=Quero%20um%20or%C3%A7amento" class="btn-primary"
+                    style="font-size:17px; padding: 18px 48px;">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                        <path
+                            d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z" />
+                        <path
+                            d="M12 0C5.373 0 0 5.373 0 12c0 2.625.846 5.059 2.284 7.034L.789 23.492a.5.5 0 00.612.638l4.702-1.399A11.934 11.934 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-2.239 0-4.308-.724-5.993-1.953a.5.5 0 00-.398-.078l-3.236.963.881-3.072a.5.5 0 00-.064-.41A9.946 9.946 0 012 12C2 6.486 6.486 2 12 2s10 4.486 10 10-4.486 10-10 10z" />
+                    </svg>
+                    Falar no WhatsApp
+                </a>
+            </div>
+            <p class="cta-micro">Sem compromisso &middot; Orcamento gratuito &middot; Resposta em ate 1h</p>
+        </div>
+    </section>
+
+    <!-- ===== FOOTER ===== -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <a href="#" class="nav-logo" style="margin-bottom:0;">Gusta<span
+                            style="color:var(--brand)">Goat</span>
+                        Studio</a>
+                    <p>Videos profissionais com inteligencia artificial para marcas que querem escalar sem complicacao.
+                    </p>
+                </div>
+                <div class="footer-col">
+                    <h4>Navegacao</h4>
+                    <ul>
+                        <li><a href="#servicos">Servicos</a></li>
+                        <li><a href="#portfolio">Portfolio</a></li>
+                        <li><a href="#precos">Precos</a></li>
+                        <li><a href="#faq">FAQ</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Contato</h4>
+                    <ul>
+                        <li><a href="https://wa.me/5511943735978">WhatsApp</a></li>
+                        <li><a href="mailto:gustavo.gome@weareg.com.br">Email</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Redes</h4>
+                    <ul>
+                        <li><a href="https://www.instagram.com/gustagoat.ai/">Instagram</a></li>
+                        <li><a href="https://www.tiktok.com/@geraew.ia">TikTok</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <span>&copy; 2026 GustaGoat Studio. Todos os direitos reservados.</span>
+                <div class="footer-socials">
+                    <a href="#" title="Instagram">&#9679;</a>
+                    <a href="#" title="TikTok">&#9679;</a>
+                    <a href="#" title="WhatsApp">&#9679;</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Navbar scroll effect
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            navbar.classList.toggle('scrolled', window.scrollY > 50);
+        });
+
+        // Mobile menu toggle
+        function toggleMenu() {
+            document.getElementById('navLinks').classList.toggle('open');
+        }
+
+        // Close mobile menu on link click
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', () => {
+                document.getElementById('navLinks').classList.remove('open');
+            });
+        });
+
+        // FAQ toggle
+        function toggleFaq(btn) {
+            const item = btn.parentElement;
+            const wasOpen = item.classList.contains('open');
+            document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+            if (!wasOpen) item.classList.add('open');
+        }
+
+        // Scroll reveal
+        const reveals = document.querySelectorAll('.reveal');
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach((entry, index) => {
+                if (entry.isIntersecting) {
+                    setTimeout(() => {
+                        entry.target.classList.add('visible');
+                    }, index * 80);
+                    revealObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+        reveals.forEach(el => revealObserver.observe(el));
+
+        // Portfolio video play/pause
+        function toggleVideo(overlay) {
+            const thumb = overlay.parentElement;
+            const video = thumb.querySelector('video');
+            if (!video) return;
+
+            if (video.paused) {
+                // Pause all other videos first
+                document.querySelectorAll('.portfolio-thumb video').forEach(v => {
+                    if (v !== video) {
+                        v.pause();
+                        v.muted = true;
+                        const ov = v.parentElement.querySelector('.play-overlay');
+                        if (ov) ov.classList.remove('hidden');
+                    }
+                });
+                video.muted = false;
+                video.play();
+                overlay.classList.add('hidden');
+            } else {
+                video.pause();
+                video.muted = true;
+                overlay.classList.remove('hidden');
+            }
+        }
+
+        // Pause video when clicking outside
+        document.querySelectorAll('.portfolio-thumb video').forEach(video => {
+            video.addEventListener('click', function() {
+                this.pause();
+                this.muted = true;
+                const overlay = this.parentElement.querySelector('.play-overlay');
+                if (overlay) overlay.classList.remove('hidden');
+            });
+        });
+    </script>
+
+</body>
+
+</html>
